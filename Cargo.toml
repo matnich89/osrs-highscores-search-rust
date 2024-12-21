@@ -2,6 +2,13 @@
 name = "osrs-highscores"
 version = "0.1.0"
 edition = "2021"
+authors = ["Mathew Nicholls <mathewnicholls@yandex.com>"]
+description = "A simple Rust library to retrieve Old School RuneScape (OSRS) Highscores for various game modes."
+license = "MIT"
+repository = "https://github.com/matnich89/osrs-highscores-search-rust"
+readme = "README.md"
+keywords = ["runescape", "osrs", "highscores", "scores"]
+categories = ["games"]
 
 [dependencies]
 ureq = "2.12.1"
