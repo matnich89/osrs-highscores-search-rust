@@ -20,6 +20,7 @@ A simple Rust library to retrieve Old School RuneScape (OSRS) Highscores for var
 - Fetch **Hardcore Ironman** OSRS highscores  
 - Fetch **Ultimate Ironman** OSRS highscores  
 - Parse the results into strongly typed structs (`Player`, `Stat`)
+- Serialize/Deserialize support via Serde
 
 ## Installation
 
@@ -28,6 +29,7 @@ Add the following to your `Cargo.toml`:
 ```toml
 [dependencies]
 osrs-highscores = "0.1.0"
+serde = { version = "1.0", features = ["derive"] }
 ```
 
 *(If you are copying the code directly, ensure you also include `ureq` in your `Cargo.toml`. This library depends on [ureq](https://crates.io/crates/ureq).)*
@@ -35,6 +37,7 @@ osrs-highscores = "0.1.0"
 ```toml
 [dependencies]
 ureq = "2.12.1"
+serde = { version = "1.0", features = ["derive"] }
 ```
 
 Then run:
@@ -56,14 +59,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let standard_player = standard_high_scores("Zezima")?;
     println!("{:#?}", standard_player);
 
-    let ironman_player = ironman_high_scores("IronMaiden")?;
-    println!("{:#?}", ironman_player);
+    // Serialize to JSON
+    let json = serde_json::to_string(&standard_player)?;
+    println!("JSON: {}", json);
 
-    let hardcore_player = hardcode_high_scores("HCIM_Legend")?;
-    println!("{:#?}", hardcore_player);
-
-    let ultimate_player = ultimate_high_scores("UIM_God")?;
-    println!("{:#?}", ultimate_player);
+    // Pretty print JSON
+    let pretty_json = serde_json::to_string_pretty(&standard_player)?;
+    println!("Pretty JSON:\n{}", pretty_json);
 
     Ok(())
 }
@@ -94,7 +96,7 @@ The raw response from the official Old School RuneScape Highscores is essentiall
 -1,-1
 ...
 ```
-Each line typically contains `rank,level,xp` for a specific skill or minigame. Some lines might include “-1” values to indicate missing or irrelevant stats. Manually parsing this can be confusing since you need to know which line corresponds to which skill or activity. This library abstracts away that complexity by:
+Each line typically contains `rank,level,xp` for a specific skill or minigame. Some lines might include "-1" values to indicate missing or irrelevant stats. Manually parsing this can be confusing since you need to know which line corresponds to which skill or activity. This library abstracts away that complexity by:
 1. Making an HTTP request to the official endpoint.
 2. Mapping each CSV line to a specific skill (e.g., Attack, Mining, etc.).
 3. Returning a neatly structured `Player` object.
@@ -103,6 +105,7 @@ Each line typically contains `rank,level,xp` for a specific skill or minigame. S
 
 ```rust
 use osrs_highscores::standard_high_scores;
+use serde_json;
 
 fn main() {
     match standard_high_scores("Zezima") {
@@ -110,6 +113,11 @@ fn main() {
             println!("Found player: {:?}", player.name);
             for stat in player.stats {
                 println!("{} => Level: {}, XP: {}", stat.skill, stat.level, stat.xp);
+            }
+
+            // Serialize to JSON
+            if let Ok(json) = serde_json::to_string_pretty(&player) {
+                println!("Player data as JSON:\n{}", json);
             }
         },
         Err(e) => {
@@ -125,7 +133,7 @@ fn main() {
 Represents a single player's highscores. Contains:
 
 ```rust
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Player {
     pub name: String,
     pub stats: Vec<Stat>,
@@ -139,7 +147,7 @@ pub struct Player {
 Represents a single skill's rank, level, and experience.
 
 ```rust
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Stat {
     pub skill: String,
     pub rank: i64,

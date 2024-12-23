@@ -1,6 +1,6 @@
 [package]
 name = "osrs-highscores"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 authors = ["Mathew Nicholls <mathewnicholls@yandex.com>"]
 description = "A simple Rust library to retrieve Old School RuneScape (OSRS) Highscores for various game modes."
@@ -12,3 +12,4 @@ categories = ["games"]
 
 [dependencies]
 ureq = "2.12.1"
+serde = { version = "1.0", features = ["derive"] }

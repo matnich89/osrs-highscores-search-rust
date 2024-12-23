@@ -1,3 +1,4 @@
+use serde::{Deserialize, Serialize};
 use ureq::Response;
 
 const STANDARD_HIGH_SCORES: &str = "https://secure.runescape.com/m=hiscore_oldschool/index_lite.ws";
@@ -96,13 +97,13 @@ fn get_stats_from_response(
     })
 }
 
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Player {
     pub name: String,
     pub stats: Vec<Stat>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Stat {
     pub skill: String,
     pub rank: i64,
