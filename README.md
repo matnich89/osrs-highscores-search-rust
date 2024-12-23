@@ -28,7 +28,7 @@ Add the following to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-osrs-highscores = "0.1.0"
+osrs-highscores = "0.2.0"
 serde = { version = "1.0", features = ["derive"] }
 ```
 
