@@ -72,6 +72,7 @@ fn get_stats_from_response(
         "Runecrafting",
         "Hunter",
         "Construction",
+        "Sailing",
     ];
 
     for (i, line) in body.lines().enumerate() {
